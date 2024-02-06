@@ -1,7 +1,7 @@
 // This assignment is inspired by a problem on Exercism (https://exercism.org/tracks/javascript/exercises/etl) that demonstrates Extract-Transform-Load using Scrabble's scoring system. 
 
 const input = require("readline-sync");
-
+const scoringAlg = require("./scoring-algorithm.js")
 const oldPointStructure = {
   1: ['A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T'],
   2: ['D', 'G'],
@@ -12,47 +12,122 @@ const oldPointStructure = {
   10: ['Q', 'Z']
 };
 
-function oldScrabbleScorer(word) {
-	word = word.toUpperCase();
-	let letterPoints = "";
+function oldScrabbleScorer(word ='') {
+   if(word.length > 0)
+   {
+	   word = word.toUpperCase();
+	   let letterPoints = "";
  
-	for (let i = 0; i < word.length; i++) {
+	   for (let i = 0; i < word.length; i++) {
  
-	  for (const pointValue in oldPointStructure) {
+	      for (const pointValue in oldPointStructure) {
  
-		 if (oldPointStructure[pointValue].includes(word[i])) {
-			letterPoints += `Points for '${word[i]}': ${pointValue}\n`
-		 }
+		      if (oldPointStructure[pointValue].includes(word[i])) {
+			   letterPoints += `Points for '${word[i]}': ${pointValue}\n`
+		      }
  
-	  }
-	}
-	return letterPoints;
+	      }
+	   }
+      return letterPoints;
+   }
+	
  }
 
 // your job is to finish writing these functions and variables that we've named //
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log("Let's play some scrabble! Enter a word:");
+
+   let userWord = input.question("Let's play some scrabble!\n\nEnter a word to score: ");
+   while (userWord === '' || isNaN(userWord) === false){
+      console.log("!!! Incorrect word, Please enter a valid word !!");
+      userWord = input.question("Let's play some scrabble! Enter a word: ");
+   }
+
+   return userWord
 };
 
-let simpleScorer;
+let simpleScorer = scoringAlg.simpleScorer;
+let vowelBonusScorer =scoringAlg.vowelBonusScorer;
 
-let vowelBonusScorer;
 
-let scrabbleScorer;
+let scrabbleScorer = (word='') =>{
+   let score = 0;
+   word = word.toLowerCase();
+   for (letter of word){
+      // for(point of Object.entries(newPointStructure)){
+      //      const [key,value] = point;
+      //      key === letter ? score += value : score
+      // }
+      for(point in newPointStructure)
+      {
+         point === letter ? score += newPointStructure[point] : score
+      }
+   }
+   
+   return score
+ }
 
-const scoringAlgorithms = [];
+const scoringAlgorithms = [{
 
-function scorerPrompt() {}
+   name:"Simple Score",
+   description:"Each letter is worth 1 point.",
+   scorerFunction: simpleScorer},{
 
-function transform() {};
+   name:"Bonus Vowels",
+   description:"Vowels are 3 pts, consonants are 1 pt.",
+   scorerFunction: vowelBonusScorer},{
 
-let newPointStructure;
+   name:"Scrabble",
+   description:"The traditional scoring algorithm.",
+   scorerFunction: scrabbleScorer
+
+}];
+
+function scorerPrompt() {
+   console.log("Which scoring algorithm would you like to use?\n");
+
+   for(algorithm of scoringAlgorithms){
+      console.log(`${scoringAlgorithms.indexOf(algorithm)} - ${algorithm.name}: ${algorithm.description}`);
+   }
+
+   let selectedAlgByUser = input.question("\nEnter 0, 1, or 2: ");
+
+   while(parseInt(selectedAlgByUser) > scoringAlgorithms.length || isNaN(selectedAlgByUser) === true){
+      console.log("\n!!! Invalid input:Please enter 0, 1, or 2 !!!\n");
+      selectedAlgByUser = input.question("Enter 0, 1, or 2: ");
+   }
+
+   return selectedAlgByUser;
+
+}
+
+function transform(oldPointsTable) {
+   const newArrOfObj = {};
+   for(pointsLevel in oldPointsTable){
+      for(letter of oldPointsTable[pointsLevel]){
+         //Object.assign(newArrOfObj,{[letter.toLowerCase()]:parseInt(pointsLevel)})
+         let lowerCaseLetter = letter.toLowerCase();
+         newArrOfObj[lowerCaseLetter] = parseInt(pointsLevel) 
+      }
+   };
+
+   //const sortedObj = object => Object.keys(object).sort().reduce((acc, key) => (acc[key] = object[key], acc), {});   
+   
+   const sortedArr = Object.entries(newArrOfObj).sort();
+   const sortedObj = sortedArr.reduce((newObj,el)=>(newObj[el[0]] = el[1],newObj),{})
+   console.log(sortedObj,"sorted array")
+   return sortedObj
+   //return newArrOfObj//sortedObj(newArrOfObj);
+
+};
+
+let newPointStructure = transform(oldPointStructure);
 
 function runProgram() {
-   initialPrompt();
-   
+   let word = initialPrompt();
+   let x = scorerPrompt();
+   console.log(`Score for '${word}': ${scoringAlgorithms[x].scorerFunction(word)}`)
 }
 
 // Don't write any code below this line //
