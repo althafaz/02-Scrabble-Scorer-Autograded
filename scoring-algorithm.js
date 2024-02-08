@@ -18,22 +18,22 @@ let simpleScorer = (word='')=>{
 
 
  //New scrabble scorrer function using new point strucure
- let scrabbleScorer = (word='',newPointSystem) =>{
-    let score = 0;
-    word = word.toLowerCase();
-    for (letter of word){
-       for(point of Object.entries(newPointSystem)){
-            const [key,value] = point;
-            key === letter ? score += value : score
-       }
-    }
+//  let scrabbleScorer = (word='',newPointSystem) =>{
+//     let score = 0;
+//     word = word.toLowerCase();
+//     for (letter of word){
+//        for(point of Object.entries(newPointSystem)){
+//             const [key,value] = point;
+//             key === letter ? score += value : score
+//        }
+//     }
     
-    return score
-  }
+//     return score
+//   }
 
 //console.log(vowelBonusScorer("foo"))
 module.exports = {
     simpleScorer: simpleScorer,
     vowelBonusScorer: vowelBonusScorer,
-    scrabbleScorer: scrabbleScorer
+    //scrabbleScorer: scrabbleScorer
 }

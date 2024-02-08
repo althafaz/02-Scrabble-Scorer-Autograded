@@ -59,10 +59,11 @@ let scrabbleScorer = (word='') =>{
       //      const [key,value] = point;
       //      key === letter ? score += value : score
       // }
-      for(point in newPointStructure)
-      {
-         point === letter ? score += newPointStructure[point] : score
-      }
+         score += newPointStructure[letter]
+      // for(point in newPointStructure)
+      // {
+      //    point === letter ? score += newPointStructure[point] : score
+      // }
    }
    
    return score
