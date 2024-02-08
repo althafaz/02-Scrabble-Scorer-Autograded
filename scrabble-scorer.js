@@ -91,9 +91,8 @@ function scorerPrompt() {
       console.log(`${scoringAlgorithms.indexOf(algorithm)} - ${algorithm.name}: ${algorithm.description}`);
    }
 
-   let selectedAlgByUser = input.question("\nEnter 0, 1, or 2: ");
-
-   while(parseInt(selectedAlgByUser) > scoringAlgorithms.length || isNaN(selectedAlgByUser) === true){
+   let selectedAlgByUser = parseInt(input.question("\nEnter 0, 1, or 2: "));
+   while(selectedAlgByUser > scoringAlgorithms.length || isNaN(selectedAlgByUser) === true){
       console.log("\n!!! Invalid input:Please enter 0, 1, or 2 !!!\n");
       selectedAlgByUser = input.question("Enter 0, 1, or 2: ");
    }
@@ -103,7 +102,7 @@ function scorerPrompt() {
 }
 
 function transform(oldPointsTable) {
-   const newArrOfObj = {};
+   const newArrOfObj = {};  //' ':1 one test is failing.
    for(pointsLevel in oldPointsTable){
       for(letter of oldPointsTable[pointsLevel]){
          //Object.assign(newArrOfObj,{[letter.toLowerCase()]:parseInt(pointsLevel)})
